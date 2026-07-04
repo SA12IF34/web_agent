@@ -1,0 +1,5 @@
+deepgram-sdk
+fastapi
+websockets
+uvicorn
+requests
