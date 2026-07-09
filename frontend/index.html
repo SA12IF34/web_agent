@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Agent</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <main class="app-shell">
+        <div class="voice-wave" id="voice-wave" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <section class="agent-card">
+            <h1>Voice Agent</h1>
+            <p class="subtitle">Choose Agent Configuration.</p>
+
+            <div class="controls">
+                <label class="field">
+                    <span>Language</span>
+                    <select id="language-select">
+                        <option value="ar">Arabic</option>
+                        <option value="en" selected>English</option>
+                        <option value="ja">Japanese</option>
+                    </select>
+                </label>
+
+                <label class="field">
+                    <span>Mode</span>
+                    <select id="mode-select">
+                        <option value="general" selected>General</option>
+                        <option value="weeb">Weeb</option>
+                        <option value="support">Customer Support</option>
+                    </select>
+                </label>
+
+                <button id="start-btn" type="button">Start Conversation</button>
+            </div>
+
+            <div class="status-panel" id="status-panel" aria-live="polite">
+                <div class="status-top">
+                    <span class="indicator"></span>
+                    <strong id="status-text">Idle</strong>
+                </div>
+                <p id="status-message">Ready when you are.</p>
+            </div>
+        </section>
+    </main>
+
+    <script type="module" src="/static/main.js" defer></script>
+</body>
+</html>
