@@ -255,6 +255,18 @@ function playAudio() {
     isPlaying = false;
 }
 
+function stopAudioOutput() {
+    // Reset timing
+    nextPlayTime = 0;
+    
+    // Close the audio context to release resources
+    if (audioOutputContext && audioOutputContext.state !== 'closed') {
+        audioOutputContext.close();
+        audioOutputContext = null;
+    }
+    
+}
+
 const handleConnect = async () => {
     if (websocket) {
         websocket.close();
@@ -322,6 +334,9 @@ const handleConnect = async () => {
                         statusText.textContent = 'Listening';
                         statusMessage.textContent = 'Waiting for your next command...';
                         
+                    } 
+                    if (data.status === 'UserStartedSpeaking') {
+                        stopAudioOutput()
                     }
                 }
             } catch (error) {

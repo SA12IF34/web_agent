@@ -17,12 +17,10 @@ import datetime
 from fastapi import WebSocket, WebSocketDisconnect
 
 from typing import Literal, Any
-
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent.parent / '.env')
 import os
-
 class Agent:
 
     def __init__(self, websocket: WebSocket):
@@ -30,7 +28,7 @@ class Agent:
         self.ws = websocket
 
         self.audio_queue = asyncio.Queue()
-
+        self.agent_audio_queue = asyncio.Queue()
         self.loop = None
 
         self.deepgram_client = None
@@ -39,7 +37,7 @@ class Agent:
         self.listen_task = None
 
         self.functions = None
-        self.funcitons_map = None
+        self.functions_map = None
         self.prompt = None
 
         self.is_running = False
@@ -96,8 +94,8 @@ class Agent:
                     )
 
                 case _:
-                    self.funcitons = GENERAL_FUNCTIONS
-                    self.funcitons_map = GENERAL_FUNCTIONS_MAP
+                    self.functions = GENERAL_FUNCTIONS
+                    self.functions_map = GENERAL_FUNCTIONS_MAP
                     self.settings = AgentV1Settings(
                         audio=GENERAL_SETTINGS[language].get('audio', False) or AUDIO_SETTINGS, 
                         agent=AgentV1SettingsAgent(
@@ -137,6 +135,7 @@ class Agent:
 
                 await asyncio.gather(
                     self.handle_send_audio(),
+                    self.handle_send_audio_back(),
                     self.handle_receive_audio()
                 )
         except Exception as exc:
@@ -170,19 +169,42 @@ class Agent:
         except Exception as exc:
             traceback.print_exc()
 
+    async def handle_send_audio_back(self):
+        try:
+            while self.is_running:
+                data = await self.agent_audio_queue.get()
+                if self.ws and data:
+                    await self.ws.send_bytes(data)
+        except WebSocketDisconnect:
+            pass
+        except Exception as exc:
+            traceback.print_exc()
+
+    def handle_stop_speaking(self):
+        try:
+            while not self.agent_audio_queue.empty():
+                self.agent_audio_queue.get_nowait()
+
+        except asyncio.QueueEmpty:
+            return
+        except Exception as exc:
+            traceback.print_exc()
+
     async def handle_agent_message(self, message):
         
         try:
             
             if isinstance(message, bytes):
-                await self.ws.send_bytes(message)
+                await self.agent_audio_queue.put(message)
                 return
             
             message_type = message.type
             print(message_type)
             if message_type == 'UserStartedSpeaking':
-                print('User started Speaking...')
-
+                self.handle_stop_speaking()
+                await self.ws.send_json({
+                    'status': message_type
+                })
 
             elif message_type == 'AgentAudioDone':
                 await self.ws.send_json({
@@ -202,7 +224,8 @@ class Agent:
             elif message_type == 'CloseConnection':
                 await self.close()
 
-
+        except WebSocketDisconnect:
+            pass
         except Exception as exc:
             print('EXCEPTION')
             traceback.print_exc()
@@ -223,7 +246,7 @@ class Agent:
                 await self.end_conversation(parameters.get('farewell', 'Take care.'))
                 return
             
-            function = self.funcitons_map.get(function_name)
+            function = self.functions_map.get(function_name)
             if not function:
                 raise ValueError(f'Function does not exist: {function_name}')
             
