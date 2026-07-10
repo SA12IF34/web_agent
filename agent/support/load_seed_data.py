@@ -67,5 +67,3 @@ def load_seed_data():
     print(f"Seed data loaded into {DB_PATH}")
 
 
-if __name__ == "__main__":
-    load_seed_data()

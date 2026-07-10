@@ -30,8 +30,8 @@ import json
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    load_seed_data()
     await create_db_and_tables()
+    load_seed_data()
     yield
 
 app = FastAPI()
