@@ -32,7 +32,7 @@ async def lifespan(app: FastAPI):
     await create_db_and_tables()
     yield
 
-app = FastAPI()
+app = FastAPI(lifespan)
 
 app.add_middleware(
     CORSMiddleware,
