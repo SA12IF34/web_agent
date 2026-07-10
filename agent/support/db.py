@@ -1,7 +1,7 @@
 from sqlmodel import SQLModel, Field, Column
 from sqlalchemy import JSON
 from sqlalchemy.ext.mutable import MutableList
-from datetime import datetime
+from datetime import datetime, date, timedelta
 import random
 from typing import List
 
@@ -32,7 +32,9 @@ class Order(SQLModel, table=True):
     account: str
     products: List[str] = Field(default=[], sa_column=Column(MutableList.as_mutable(JSON)))
     created_at: datetime | None = Field(default_factory=datetime.now)
+    deliver_at: date | None = Field(default_factory=date.today()+timedelta(days=5))
     total_price: float
+    status: str = Field(default='in delivery') # in delivery | delivered
 
 
 class Payment(SQLModel, table=True):

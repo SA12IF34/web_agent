@@ -1,4 +1,5 @@
 from deepgram.types import ThinkSettingsV1FunctionsItem
+from .logic import engine
 from .logic import (
     search_products as handle_search_products,
     get_product as handle_get_product,
@@ -25,7 +26,7 @@ async def search_products(params):
         if not terms:
             return 'You must provide the search terms'
         
-        result = await handle_search_products(terms)
+        result = await handle_search_products(terms, engine)
         
         return result
     
@@ -40,7 +41,7 @@ async def get_product(params):
         if not product_id and not product_name:
             return 'You must provide the product id at least'
         
-        result = await handle_get_product(product_id, product_name)
+        result = await handle_get_product(engine, product_id, product_name)
 
         return result
     
@@ -56,7 +57,7 @@ async def search_order(params):
         if not order_id and not account_id:
             return "You must provide either the order id or order's account id"
         
-        result = await handle_search_order(order_id, account_id)
+        result = await handle_search_order(engine, order_id, account_id)
 
         return result
     
@@ -73,7 +74,7 @@ async def search_account(params):
         if not account_id and not email and not phone:
             return 'You must provide account id or email or phone number at least'
         
-        result = await handle_search_account(account_id, email, phone)
+        result = await handle_search_account(engine, account_id, email, phone)
 
         return result
 
@@ -94,7 +95,7 @@ async def cancel_order(params):
         if not order_id:
             return 'You must provide order id'
         
-        result = await handle_cancel_order(order_id)
+        result = await handle_cancel_order(engine, order_id)
 
         return result
 
@@ -115,7 +116,7 @@ async def update_account(params):
         if not email and not phone and not password:
             return 'You must provide the value to be updated'
         
-        result = await handle_update_account(account_id, email, phone, password)
+        result = await handle_update_account(engine, account_id, email, phone, password)
 
         return result
     
@@ -149,7 +150,7 @@ async def delete_account(params):
         if not account_id:
             return 'You must provide account id'
         
-        result = await handle_delete_account(account_id)
+        result = await handle_delete_account(engine, account_id)
 
         return result
 
@@ -163,7 +164,7 @@ async def create_payment(params):
         if not order_id:
             return 'You must provide order id'
 
-        result = await handle_create_payment(order_id)
+        result = await handle_create_payment(engine, order_id)
 
         return result
     
@@ -179,7 +180,7 @@ async def refund_payment(params):
         if not payment_id and not order_id:
             return 'You must provide either payment or order id'
 
-        result = await handle_refund_payment(payment_id, order_id)
+        result = await handle_refund_payment(engine, payment_id, order_id)
 
         return result
     
@@ -208,7 +209,7 @@ async def create_complain(params):
         description = params.get('description')
 
         if account_id and description:
-            result = await handle_create_complain(account_id, description)
+            result = await handle_create_complain(engine, account_id, description)
 
             return result
         
@@ -224,7 +225,7 @@ async def create_request(params):
         description = params.get('description')
 
         if account_id and description:
-            result = await handle_create_request(account_id, description)
+            result = await handle_create_request(engine, account_id, description)
 
             return result
         

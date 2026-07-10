@@ -5,6 +5,18 @@ const statusMessage = document.getElementById('status-message');
 const languageSelect = document.getElementById('language-select');
 const modeSelect = document.getElementById('mode-select');
 const voiceWave = document.getElementById('voice-wave');
+const appShell = document.getElementById('app-shell');
+const agentCard = document.getElementById('agent-card');
+const customerSupportMode = document.getElementById('customer-support');
+const collapseToggle = document.getElementById('collapse-toggle');
+const supportTabsContainer = document.getElementById('support-tabs');
+const supportTabButtons = Array.from(document.querySelectorAll('.support-tab'));
+const supportContent = document.getElementById('support-content');
+const accountSelect = document.getElementById('account-select');
+
+let started = false;
+let activeSupportTab = 'products';
+let selectedAccountId = '';
 
 let websocket;
 
@@ -267,6 +279,150 @@ function stopAudioOutput() {
     
 }
 
+function escapeHtml(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+function renderSupportPlaceholder(message) {
+    supportContent.innerHTML = `<p class="support-placeholder">${escapeHtml(message)}</p>`;
+}
+
+function renderSupportList(items, renderItem) {
+    if (!items || items.length === 0) {
+        renderSupportPlaceholder('No records found for this account.');
+        return;
+    }
+
+    const cards = items.map((item) => `<article class="support-item">${renderItem(item)}</article>`).join('');
+    supportContent.innerHTML = `<div class="support-list">${cards}</div>`;
+}
+
+function renderProducts(products) {
+    renderSupportList(products, (product) => `
+        <div class="support-item-title">${escapeHtml(product.name || 'Product')}</div>
+        <div class="support-item-meta">Price: ${escapeHtml(product.price ?? 'n/a')} • Stock: ${escapeHtml(product.stock ?? 'n/a')}</div>
+        <p>${escapeHtml(product.description || 'No description available.')}</p>
+    `);
+}
+
+function renderOrders(orders) {
+    renderSupportList(orders, (order) => `
+        <div class="support-item-title">${escapeHtml(order.id || 'Order')}</div>
+        <div class="support-item-meta">Created: ${escapeHtml(order.created_at || 'n/a')} • Total: ${escapeHtml(order.total_price ?? 'n/a')}</div>
+        <p>Status: ${escapeHtml(order.status || 'Unknown')} • Products: ${escapeHtml((order.products || []).join(', ') || 'None')}</p>
+    `);
+}
+
+function renderPayments(payments) {
+    renderSupportList(payments, (payment) => `
+        <div class="support-item-title">${escapeHtml(payment.id || 'Payment')}</div>
+        <div class="support-item-meta">Order: ${escapeHtml(payment.order || 'n/a')} • Created: ${escapeHtml(payment.created_at || 'n/a')}</div>
+        <p>Status: ${escapeHtml(payment.status || 'Unknown')}</p>
+    `);
+}
+
+function renderSupportRequests(items, typeLabel) {
+    renderSupportList(items, (item) => `
+        <div class="support-item-title">${escapeHtml(item.id || typeLabel)}</div>
+        <div class="support-item-meta">Created: ${escapeHtml(item.created_at || 'n/a')}</div>
+        <p>${escapeHtml(item.description || 'No description available.')}</p>
+    `);
+}
+
+async function fetchSupportData(url) {
+    const response = await fetch(url);
+    if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+    }
+    return response.json();
+}
+
+async function loadSupportTab(tabName, accountId) {
+    if (!accountId) {
+        supportTabsContainer?.classList.remove('is-ready');
+        renderSupportPlaceholder('Choose an account to start exploring support data.');
+        return;
+    }
+
+    supportTabsContainer?.classList.add('is-ready');
+    renderSupportPlaceholder('Loading data...');
+
+    try {
+        let data;
+        switch (tabName) {
+            case 'products':
+                data = await fetchSupportData('/products');
+                renderProducts(data);
+                break;
+            case 'orders':
+                data = await fetchSupportData(`/orders/${accountId}`);
+                renderOrders(data);
+                break;
+            case 'payments':
+                data = await fetchSupportData(`/payments/${accountId}`);
+                renderPayments(data);
+                break;
+            case 'requests':
+                data = await fetchSupportData(`/requests/${accountId}`);
+                renderSupportRequests(data, 'Request');
+                break;
+            case 'complaints':
+                data = await fetchSupportData(`/complaints/${accountId}`);
+                renderSupportRequests(data, 'Complaint');
+                break;
+            default:
+                renderSupportPlaceholder('Select a tab to view support data.');
+        }
+    } catch (error) {
+        console.error(error);
+        renderSupportPlaceholder('Unable to load support data right now.');
+    }
+}
+
+function setActiveSupportTab(tabName) {
+    activeSupportTab = tabName;
+    supportTabButtons.forEach((button) => {
+        button.classList.toggle('active', button.dataset.tab === tabName);
+    });
+}
+
+function handleSupportAccountChange(event) {
+    selectedAccountId = event.target.value;
+
+    if (!selectedAccountId) {
+        supportTabsContainer?.classList.remove('is-ready');
+        renderSupportPlaceholder('Choose an account to start exploring support data.');
+        return;
+    }
+
+    setActiveSupportTab(activeSupportTab);
+    loadSupportTab(activeSupportTab, selectedAccountId);
+}
+
+function setAgentCardCollapsed(isCollapsed) {
+    agentCard?.classList.toggle('collapse', isCollapsed);
+    appShell?.classList.toggle('support-mode', isCollapsed);
+    collapseToggle?.setAttribute('aria-expanded', String(!isCollapsed));
+    if (collapseToggle) {
+        collapseToggle.textContent = isCollapsed ? 'Expand Card' : 'Collapse Card';
+    }
+}
+
+function handleStartCustomerSupportMode() {
+    setAgentCardCollapsed(true);
+    customerSupportMode?.classList.add('show');
+}
+
+function handleExitCustomerSupportMode() {
+    setAgentCardCollapsed(false);
+    customerSupportMode?.classList.remove('show');
+}
+
 const handleConnect = async () => {
     if (websocket) {
         websocket.close();
@@ -277,6 +433,7 @@ const handleConnect = async () => {
         statusText.textContent = 'Idle';
         statusMessage.textContent = 'Ready when you are.'
         websocket = null;
+        started = false;
         return;
     }
 
@@ -305,6 +462,7 @@ const handleConnect = async () => {
     
     websocket.onopen = (e) => {
         console.log('connected!')
+        started = true;
     }
     
     websocket.onmessage = async (e) => {
@@ -361,16 +519,44 @@ if (startButton) {
             stopAudioCapture()
             websocket = null;
         }
-        handleConnect()
+        if (started) handleConnect();
     });
 
-    modeSelect.addEventListener('change', () => {
+    modeSelect.addEventListener('change', (e) => {
         if (websocket) {
             websocket.close();
             stopAudioCapture()
 
             websocket = null;
         }
-        handleConnect();
+
+        if (e.target.value === 'support') {
+            handleStartCustomerSupportMode();
+        } else {
+            handleExitCustomerSupportMode();
+        }
+
+        if (started) handleConnect();
     })
+
+    collapseToggle?.addEventListener('click', () => {
+        const isCollapsed = !agentCard?.classList.contains('collapse');
+        setAgentCardCollapsed(isCollapsed);
+    });
+
+    supportTabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            const tabName = button.dataset.tab;
+            if (!tabName || !selectedAccountId) return;
+            setActiveSupportTab(tabName);
+            loadSupportTab(tabName, selectedAccountId);
+        });
+    });
+
+    accountSelect?.addEventListener('change', handleSupportAccountChange);
+
+    if (accountSelect) {
+        accountSelect.value = 'ACC-100001';
+        handleSupportAccountChange({ target: accountSelect });
+    }
 }

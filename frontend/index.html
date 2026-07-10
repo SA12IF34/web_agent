@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <main class="app-shell">
+    <main class="app-shell" id="app-shell">
         <div class="voice-wave" id="voice-wave" aria-hidden="true">
             <span></span>
             <span></span>
@@ -15,9 +15,12 @@
             <span></span>
         </div>
 
-        <section class="agent-card">
-            <h1>Voice Agent</h1>
-            <p class="subtitle">Choose Agent Configuration.</p>
+        <section id="agent-card" class="agent-card">
+            <div>
+                <h1>Voice Agent</h1>
+                <p class="subtitle">Choose Agent Configuration.</p>
+                <button id="collapse-toggle" class="collapse-toggle" type="button" aria-expanded="false">Collapse Card</button>
+            </div>
 
             <div class="controls">
                 <label class="field">
@@ -50,7 +53,38 @@
             </div>
         </section>
     </main>
+    <section id="customer-support" class="customer-support" aria-live="polite">
+        <div class="support-shell">
+            <div class="support-header">
+                <h2>Customer Support Dashboard</h2>
+                <p>Select an account to inspect products, orders, payments, requests, and complaints.</p>
+            </div>
 
+            <label class="support-field">
+                <span>Account</span>
+                <select id="account-select">
+                    <option value="">Choose an account</option>
+                    <option value="ACC-100001">ACC-100001</option>
+                    <option value="ACC-100002">ACC-100002</option>
+                    <option value="ACC-100003">ACC-100003</option>
+                    <option value="ACC-100004">ACC-100004</option>
+                    <option value="ACC-100005">ACC-100005</option>
+                </select>
+            </label>
+
+            <div id="support-tabs" class="support-tabs" role="tablist" aria-label="Customer support tabs">
+                <button type="button" class="support-tab active" data-tab="products">Products</button>
+                <button type="button" class="support-tab" data-tab="orders">Orders</button>
+                <button type="button" class="support-tab" data-tab="payments">Payments</button>
+                <button type="button" class="support-tab" data-tab="requests">Requests</button>
+                <button type="button" class="support-tab" data-tab="complaints">Complaints</button>
+            </div>
+
+            <div id="support-content" class="support-content">
+                <p class="support-placeholder">Choose an account to start exploring support data.</p>
+            </div>
+        </div>
+    </section>
     <script type="module" src="/static/main.js" defer></script>
 </body>
 </html>

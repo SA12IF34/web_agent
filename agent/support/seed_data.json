@@ -1,0 +1,276 @@
+{
+  "accounts": [
+    {
+      "id": "ACC-100001",
+      "email": "ava.martin@example.com",
+      "first_name": "Ava",
+      "last_name": "Martin",
+      "password": "pass1234",
+      "phone": "+1-555-0101"
+    },
+    {
+      "id": "ACC-100002",
+      "email": "liam.johnson@example.com",
+      "first_name": "Liam",
+      "last_name": "Johnson",
+      "password": "securepass",
+      "phone": "+1-555-0102"
+    },
+    {
+      "id": "ACC-100003",
+      "email": "mia.chen@example.com",
+      "first_name": "Mia",
+      "last_name": "Chen",
+      "password": "mypass789",
+      "phone": "+1-555-0103"
+    },
+    {
+      "id": "ACC-100004",
+      "email": "noah.patel@example.com",
+      "first_name": "Noah",
+      "last_name": "Patel",
+      "password": "noah2026",
+      "phone": "+1-555-0104"
+    },
+    {
+      "id": "ACC-100005",
+      "email": "sophia.nguyen@example.com",
+      "first_name": "Sophia",
+      "last_name": "Nguyen",
+      "password": "sophia321",
+      "phone": "+1-555-0105"
+    },
+    {
+      "id": "ACC-100006",
+      "email": "ethan.brown@example.com",
+      "first_name": "Ethan",
+      "last_name": "Brown",
+      "password": "brownie01",
+      "phone": "+1-555-0106"
+    },
+    {
+      "id": "ACC-100007",
+      "email": "olivia.garcia@example.com",
+      "first_name": "Olivia",
+      "last_name": "Garcia",
+      "password": "olivia77",
+      "phone": "+1-555-0107"
+    },
+    {
+      "id": "ACC-100008",
+      "email": "james.kim@example.com",
+      "first_name": "James",
+      "last_name": "Kim",
+      "password": "kimjames",
+      "phone": "+1-555-0108"
+    },
+    {
+      "id": "ACC-100009",
+      "email": "amelia.ross@example.com",
+      "first_name": "Amelia",
+      "last_name": "Ross",
+      "password": "ross2026",
+      "phone": "+1-555-0109"
+    },
+    {
+      "id": "ACC-100010",
+      "email": "benjamin.lopez@example.com",
+      "first_name": "Benjamin",
+      "last_name": "Lopez",
+      "password": "benji456",
+      "phone": "+1-555-0110"
+    }
+  ],
+  "products": [
+    {"id": "PROD-200001", "name": "Logitech G305 Wireless Gaming Mouse", "description": "Lightweight wireless gaming mouse with HERO sensor and long battery life.", "price": 49.99, "stock": 25},
+    {"id": "PROD-200002", "name": "HyperX Cloud II Headset", "description": "Over-ear gaming headset with 7.1 surround sound and comfort memory foam.", "price": 99.99, "stock": 18},
+    {"id": "PROD-200003", "name": "Samsung 970 EVO Plus 1TB SSD", "description": "NVMe SSD offering fast boot times and high-speed storage for gaming and work.", "price": 129.99, "stock": 30},
+    {"id": "PROD-200004", "name": "Corsair Vengeance LPX 16GB RAM", "description": "High-performance DDR4 memory kit designed for gaming and multitasking.", "price": 74.99, "stock": 40},
+    {"id": "PROD-200005", "name": "ASUS TUF Gaming RTX 4070", "description": "High-end graphics card with ray tracing and efficient cooling for modern games.", "price": 599.99, "stock": 12},
+    {"id": "PROD-200006", "name": "WD Blue 2TB HDD", "description": "Reliable 3.5-inch hard drive for bulk storage and media libraries.", "price": 69.99, "stock": 22},
+    {"id": "PROD-200007", "name": "NZXT H510 Compact Case", "description": "Mid-tower PC case with clean airflow design and tempered glass side panel.", "price": 89.99, "stock": 35},
+    {"id": "PROD-200008", "name": "Intel Core i5-12400F", "description": "6-core desktop processor ideal for gaming and everyday productivity.", "price": 159.99, "stock": 28},
+    {"id": "PROD-200009", "name": "MSI B550-A PRO Motherboard", "description": "ATX motherboard with PCIe 4.0 support and reliable power delivery.", "price": 139.99, "stock": 16},
+    {"id": "PROD-200010", "name": "Corsair RM750e Power Supply", "description": "750W 80+ Gold certified PSU with quiet operation and modular cables.", "price": 109.99, "stock": 20},
+    {"id": "PROD-200011", "name": "Cooler Master Hyper 212 Black", "description": "Air CPU cooler with four heat pipes and broad compatibility.", "price": 44.99, "stock": 50},
+    {"id": "PROD-200012", "name": "Kingston FURY Beast 32GB DDR4", "description": "High-capacity memory kit for content creation and heavy multitasking.", "price": 119.99, "stock": 15},
+    {"id": "PROD-200013", "name": "TP-Link Archer AX3000 Router", "description": "Dual-band Wi-Fi 6 router with strong coverage and gigabit connectivity.", "price": 99.99, "stock": 17},
+    {"id": "PROD-200014", "name": "Anker 735 Charger", "description": "140W USB-C charger for laptops, phones, and portable devices.", "price": 109.99, "stock": 13},
+    {"id": "PROD-200015", "name": "Belkin 3-Port USB-C Hub", "description": "Compact hub with HDMI, USB-A, and USB-C expansion for laptops.", "price": 79.99, "stock": 11},
+    {"id": "PROD-200016", "name": "Logitech MX Keys Mini", "description": "Slim wireless keyboard with low-profile keys and multi-device pairing.", "price": 99.99, "stock": 24},
+    {"id": "PROD-200017", "name": "Razer Basilisk V3 Mouse", "description": "Ergonomic gaming mouse with customizable buttons and high-precision sensor.", "price": 69.99, "stock": 19},
+    {"id": "PROD-200018", "name": "Dell UltraSharp U2723QE Monitor", "description": "27-inch 4K USB-C monitor designed for productivity and media work.", "price": 549.99, "stock": 8},
+    {"id": "PROD-200019", "name": "SanDisk Ultra Flair USB 3.0", "description": "Portable flash drive with fast file transfer and compact metal body.", "price": 19.99, "stock": 26},
+    {"id": "PROD-200020", "name": "Netgear Nighthawk Mesh WiFi 6", "description": "Whole-home mesh system for fast and reliable wireless coverage.", "price": 249.99, "stock": 33},
+    {"id": "PROD-200021", "name": "WD Black SN770 NVMe SSD", "description": "High-performance NVMe SSD for gaming rigs and creative workflows.", "price": 129.99, "stock": 21},
+    {"id": "PROD-200022", "name": "ASUS TUF VG279QM Monitor", "description": "27-inch gaming monitor with 240Hz refresh rate and fast response time.", "price": 299.99, "stock": 7},
+    {"id": "PROD-200023", "name": "SteelSeries Arctis Nova 7", "description": "Wireless gaming headset with clear mic and multi-platform compatibility.", "price": 129.99, "stock": 14},
+    {"id": "PROD-200024", "name": "Seagate BarraCuda 4TB HDD", "description": "Large-capacity hard drive for backups, archives, and media storage.", "price": 99.99, "stock": 9},
+    {"id": "PROD-200025", "name": "Gigabyte GeForce RTX 4060", "description": "Mid-range graphics card with DLSS support and efficient 8GB memory.", "price": 299.99, "stock": 10},
+    {"id": "PROD-200026", "name": "AMD Ryzen 7 5700X", "description": "8-core processor engineered for high-end gaming and productivity tasks.", "price": 189.99, "stock": 23},
+    {"id": "PROD-200027", "name": "EKWB Predator 240 AIO", "description": "240mm all-in-one liquid cooler for compact high-performance builds.", "price": 129.99, "stock": 18},
+    {"id": "PROD-200028", "name": "Thermaltake Toughpower GF3 850W", "description": "850W power supply with fully modular design and strong efficiency.", "price": 159.99, "stock": 12},
+    {"id": "PROD-200029", "name": "Synology DS224+ NAS", "description": "Compact 2-bay NAS for home media storage and file sharing.", "price": 399.99, "stock": 16},
+    {"id": "PROD-200030", "name": "Logitech C920 Webcam", "description": "HD webcam with autofocus and clear video for meetings and streaming.", "price": 79.99, "stock": 20}
+  ],
+  "orders": [
+    {
+      "id": "ORD-300001",
+      "account": "ACC-100001",
+      "products": ["PROD-200001", "PROD-200006"],
+      "deliver_at": "2026-07-15",
+      "total_price": 149.94,
+      "status": "in delivery"
+    },
+    {
+      "id": "ORD-300002",
+      "account": "ACC-100002",
+      "products": ["PROD-200003", "PROD-200007"],
+      "deliver_at": "2026-06-10",
+      "total_price": 114.24,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-300003",
+      "account": "ACC-100003",
+      "products": ["PROD-200005"],
+      "deliver_at": "2026-07-18",
+      "total_price": 299.0,
+      "status": "in delivery"
+    },
+    {
+      "id": "ORD-300004",
+      "account": "ACC-100004",
+      "products": ["PROD-200009", "PROD-200010"],
+      "deliver_at": "2026-06-04",
+      "total_price": 163.0,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-300005",
+      "account": "ACC-100005",
+      "products": ["PROD-200012", "PROD-200013"],
+      "deliver_at": "2026-07-23",
+      "total_price": 178.99,
+      "status": "in delivery"
+    },
+    {
+      "id": "ORD-300006",
+      "account": "ACC-100006",
+      "products": ["PROD-200014", "PROD-200015"],
+      "deliver_at": "2026-06-07",
+      "total_price": 178.99,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-300007",
+      "account": "ACC-100007",
+      "products": ["PROD-200017", "PROD-200018"],
+      "deliver_at": "2026-07-26",
+      "total_price": 594.0,
+      "status": "in delivery"
+    },
+    {
+      "id": "ORD-300008",
+      "account": "ACC-100008",
+      "products": ["PROD-200021", "PROD-200022"],
+      "deliver_at": "2026-06-02",
+      "total_price": 448.5,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-300009",
+      "account": "ACC-100001",
+      "products": ["PROD-200016", "PROD-200020"],
+      "deliver_at": "2026-06-20",
+      "total_price": 199.98,
+      "status": "delivered"
+    },
+    {
+      "id": "ORD-300010",
+      "account": "ACC-100003",
+      "products": ["PROD-200019", "PROD-200024"],
+      "deliver_at": "2026-07-30",
+      "total_price": 199.98,
+      "status": "in delivery"
+    },
+    {
+      "id": "ORD-300011",
+      "account": "ACC-100004",
+      "products": ["PROD-200023", "PROD-200030"],
+      "deliver_at": "2026-08-05",
+      "total_price": 209.98,
+      "status": "in delivery"
+    },
+    {
+      "id": "ORD-300012",
+      "account": "ACC-100006",
+      "products": ["PROD-200025", "PROD-200028"],
+      "deliver_at": "2026-06-18",
+      "total_price": 459.98,
+      "status": "delivered"
+    }
+  ],
+  "payments": [
+    {
+      "id": "P-400001",
+      "order": "ORD-300001",
+      "status": "paid"
+    },
+    {
+      "id": "P-400002",
+      "order": "ORD-300002",
+      "status": "paid"
+    },
+    {
+      "id": "P-400003",
+      "order": "ORD-300003",
+      "status": "pending"
+    },
+    {
+      "id": "P-400004",
+      "order": "ORD-300004",
+      "status": "paid"
+    },
+    {
+      "id": "P-400005",
+      "order": "ORD-300005",
+      "status": "pending"
+    },
+    {
+      "id": "P-400006",
+      "order": "ORD-300006",
+      "status": "paid"
+    },
+    {
+      "id": "P-400007",
+      "order": "ORD-300007",
+      "status": "pending"
+    },
+    {
+      "id": "P-400008",
+      "order": "ORD-300008",
+      "status": "paid"
+    },
+    {
+      "id": "P-400009",
+      "order": "ORD-300009",
+      "status": "paid"
+    },
+    {
+      "id": "P-400010",
+      "order": "ORD-300010",
+      "status": "pending"
+    },
+    {
+      "id": "P-400011",
+      "order": "ORD-300011",
+      "status": "paid"
+    },
+    {
+      "id": "P-400012",
+      "order": "ORD-300012",
+      "status": "paid"
+    }
+  ]
+}
