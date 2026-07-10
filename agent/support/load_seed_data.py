@@ -3,7 +3,7 @@ from pathlib import Path
 
 from sqlmodel import SQLModel, Session, create_engine
 
-from db import Account, Product, Order, Payment
+from .db import Account, Product, Order, Payment
 
 from datetime import date
 BASE_DIR = Path(__file__).resolve().parent
