@@ -10,7 +10,6 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response, JSONResponse
 from agent.setup import Agent
-from agent.support.load_seed_data import load_seed_data
 from agent.support.logic import (
     engine, 
     create_db_and_tables, 
@@ -31,7 +30,6 @@ import json
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await create_db_and_tables()
-    load_seed_data()
     yield
 
 app = FastAPI()

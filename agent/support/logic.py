@@ -3,7 +3,7 @@ from sqlmodel import SQLModel, select, or_
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel.ext.asyncio.session import AsyncSession
 from .db import Account, Product, Order, Payment, SupportComplaint, SupportRequest
-
+from .load_seed_data import load_seed_data
 from functools import reduce
 
 import json
@@ -18,6 +18,7 @@ async def create_db_and_tables(engine):
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
+    load_seed_data()
 
 async def create_product(data, engine):
     
