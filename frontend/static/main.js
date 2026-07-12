@@ -504,8 +504,14 @@ const handleConnect = async () => {
     }
 
     websocket.onclose = (e) => {
-        console.log('closed')
-        console.log(e)
+        stopAudioCapture()
+        startButton.innerText = 'Start Conversation';
+        voiceWave?.classList.remove('active');
+        statusPanel?.classList.remove('is-speaking');
+        statusText.textContent = 'Idle';
+        statusMessage.textContent = 'Ready when you are.'
+        websocket = null;
+        started = false;
     }
     startButton.innerText = 'End Conversation';
 };

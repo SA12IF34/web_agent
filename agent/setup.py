@@ -1,5 +1,5 @@
 from deepgram import AsyncDeepgramClient
-from deepgram.agent.v1.types import AgentV1Settings, AgentV1SettingsAgent, AgentV1FunctionCallRequest, AgentV1SendFunctionCallResponse
+from deepgram.agent.v1.types import AgentV1Settings, AgentV1SettingsAgent, AgentV1FunctionCallRequest, AgentV1SendFunctionCallResponse, AgentV1InjectAgentMessage
 
 from agent.general.config import SETTINGS as GENERAL_SETTINGS
 from agent.general.functions import FUNCTIONS as GENERAL_FUNCTIONS, FUNCTIONS_MAP as GENERAL_FUNCTIONS_MAP
@@ -13,8 +13,8 @@ import asyncio
 import json
 import asyncio
 import traceback
-import datetime
 from fastapi import WebSocket, WebSocketDisconnect
+from websockets.exceptions import ConnectionClosedOK
 
 from typing import Literal, Any
 from pathlib import Path
@@ -132,17 +132,18 @@ class Agent:
             result = await self.connect(mode, language)
             if result:
                 self.is_running = True
-
+                
                 await asyncio.gather(
                     self.handle_send_audio(),
                     self.handle_send_audio_back(),
                     self.handle_receive_audio()
                 )
-        except Exception as exc:
-            traceback.print_exc()
 
+        except Exception as exc:
+            pass
         finally:
-            await self.close()
+            if self.is_running:
+                await self.close()
     
     async def handle_receive_audio(self):
         try:
@@ -152,11 +153,10 @@ class Agent:
                 if "bytes" in data:
                     await self.audio_queue.put(data['bytes'])
 
-        except (WebSocketDisconnect, RuntimeError):
-            await self.close()
-        
         except Exception as exc:
-            traceback.print_exc()
+            pass
+
+        finally:            
             await self.close()
 
     async def handle_send_audio(self):
@@ -165,9 +165,12 @@ class Agent:
                 data = await self.audio_queue.get()
                 if self.ws and data:
                     await self.agent_conn.send_media(data)
-
+        
         except Exception as exc:
-            traceback.print_exc()
+            pass
+
+        finally:
+            await self.close()
 
     async def handle_send_audio_back(self):
         try:
@@ -175,20 +178,20 @@ class Agent:
                 data = await self.agent_audio_queue.get()
                 if self.ws and data:
                     await self.ws.send_bytes(data)
-        except WebSocketDisconnect:
-            pass
+
         except Exception as exc:
-            traceback.print_exc()
+            pass
+
+        finally:
+            await self.close()
 
     def handle_stop_speaking(self):
         try:
             while not self.agent_audio_queue.empty():
                 self.agent_audio_queue.get_nowait()
 
-        except asyncio.QueueEmpty:
-            return
         except Exception as exc:
-            traceback.print_exc()
+            pass
 
     async def handle_agent_message(self, message):
         
@@ -198,7 +201,7 @@ class Agent:
                 await self.agent_audio_queue.put(message)
                 return
             
-            message_type = message.type
+            message_type = message['type'] if type(message) == dict else message.type
             print(message_type)
             if message_type == 'UserStartedSpeaking':
                 self.handle_stop_speaking()
@@ -212,7 +215,7 @@ class Agent:
                 })
 
             elif message_type == 'ConversationText':
-                print(f'')
+                pass
 
             elif message_type == 'FunctionCallRequest':
                 await self.handle_function_call(message)
@@ -222,6 +225,7 @@ class Agent:
             elif message_type == 'Error':
                 print(message)
             elif message_type == 'CloseConnection':
+                print('Connection Closed...')
                 await self.close()
 
         except WebSocketDisconnect:
@@ -264,8 +268,15 @@ class Agent:
             print('EXCEPTION')
             traceback.print_exc()
 
+
     async def end_conversation(self, farewell: str):
-        pass
+        await self.agent_conn.send_inject_agent_message(AgentV1InjectAgentMessage(
+            message=farewell
+        ))
+
+        await asyncio.sleep(3)
+        await self.close()
+
 
     async def cleanup(self):
         if self.listen_task and not self.listen_task.done():
@@ -273,7 +284,7 @@ class Agent:
             try:
                 await self.listen_task
             except asyncio.CancelledError:
-                print('cancelled')
+                pass
             self.listen_task = None
         
         self.agent_context = None
@@ -282,7 +293,8 @@ class Agent:
 
     async def close(self):
         import websockets
-        
+        await self.ws.close()
+
         try:
             if self.agent_context:
                 await self.agent_context.__aexit__(None, None, None)
@@ -291,7 +303,8 @@ class Agent:
             print('closed')
         except Exception as exc:
             print('CLOSE EXCEPTION')
-            traceback.print_exc()
+
+        
 
         await self.cleanup()
 

@@ -22,6 +22,7 @@ from pathlib import Path
 load_dotenv(Path(__file__).parent.parent.parent / '.env')
 
 import os
+from datetime import date
 
 SETTINGS = {
     'ar': {
@@ -48,7 +49,7 @@ SETTINGS = {
                 model="gpt-4o-mini",
                 temperature=0.2,
             ),
-            prompt=SYSTEM_PROMPT_AR,
+            prompt=SYSTEM_PROMPT_AR.format(date_=date.today()),
             functions=FUNCTIONS
         ),
         'speak': SpeakSettingsV1(
@@ -78,7 +79,7 @@ SETTINGS = {
                 model="gpt-4o-mini",
                 temperature=0.2,
             ),
-            prompt=SYSTEM_PROMPT,
+            prompt=SYSTEM_PROMPT.format(date_=date.today()),
             functions=FUNCTIONS
         ),
         'speak': SpeakSettingsV1(
@@ -101,7 +102,7 @@ SETTINGS = {
                 model="gpt-4o-mini",
                 temperature=0.2,
             ),
-            prompt=SYSTEM_PROMPT_JA,
+            prompt=SYSTEM_PROMPT_JA.format(date_=date.today()),
             functions=FUNCTIONS
         ),
         'speak': SpeakSettingsV1(

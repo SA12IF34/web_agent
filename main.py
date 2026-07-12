@@ -56,7 +56,7 @@ async def call_agent(websocket: WebSocket, mode: str, lang: str):
 
         await voice_agent.run(mode, lang)
 
-    except asyncio.CancelledError:
+    except (asyncio.CancelledError, RuntimeError):
         return 204
     
     except Exception as exc:

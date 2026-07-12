@@ -18,7 +18,7 @@ async def create_db_and_tables(engine):
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
-    load_seed_data()
+    # load_seed_data()
 
 async def create_product(data, engine):
     
