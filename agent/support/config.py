@@ -47,14 +47,14 @@ SETTINGS = {
         'think': ThinkSettingsV1(
             provider=ThinkSettingsV1Provider_OpenAi(
                 model="gpt-4o-mini",
-                temperature=0.2,
+                temperature=0.1,
             ),
             prompt=SYSTEM_PROMPT_AR.format(date_=date.today()),
             functions=FUNCTIONS
         ),
         'speak': SpeakSettingsV1(
             provider=SpeakSettingsV1Provider_OpenAi(
-                model='tts-1',
+                model='gpt-4o-mini-tts',
                 voice='fable',
             ),
             endpoint=SpeakSettingsV1Endpoint(
@@ -77,7 +77,7 @@ SETTINGS = {
         'think': ThinkSettingsV1(
             provider=ThinkSettingsV1Provider_OpenAi(
                 model="gpt-4o-mini",
-                temperature=0.2,
+                temperature=0.1,
             ),
             prompt=SYSTEM_PROMPT.format(date_=date.today()),
             functions=FUNCTIONS
@@ -100,7 +100,7 @@ SETTINGS = {
         'think': ThinkSettingsV1(
             provider=ThinkSettingsV1Provider_OpenAi(
                 model="gpt-4o-mini",
-                temperature=0.2,
+                temperature=0.1,
             ),
             prompt=SYSTEM_PROMPT_JA.format(date_=date.today()),
             functions=FUNCTIONS

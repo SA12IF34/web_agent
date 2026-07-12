@@ -53,7 +53,7 @@ SETTINGS = {
         ),
         'speak': SpeakSettingsV1(
             provider=SpeakSettingsV1Provider_OpenAi(
-                model='tts-1',
+                model='gpt-4o-mini-tts',
                 voice='fable',
             ),
             endpoint=SpeakSettingsV1Endpoint(

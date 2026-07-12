@@ -22,6 +22,7 @@ let websocket;
 
 let audioQueue = [];
 let sampleRate = 16000;
+let playbackRate = 1;
 
 let audioOutputContext;
 let nextPlayTime = 0;
@@ -240,6 +241,7 @@ function playAudio() {
 
         const source = audioOutputContext.createBufferSource();
         source.buffer = audioBuffer;
+        source.playbackRate.value = playbackRate;
 
         const gainNode = audioOutputContext.createGain();
         gainNode.gain.value = 1.0; // Full volume
@@ -251,6 +253,7 @@ function playAudio() {
         // Calculate when this chunk should start playing
         const currentTime = audioOutputContext.currentTime;
         const bufferDuration = audioBuffer.duration;
+        const effectiveDuration = bufferDuration / playbackRate;
         
         // If nextPlayTime is in the past or too close to current time, move it slightly ahead
         if (nextPlayTime <= currentTime + 0.03) {
@@ -261,7 +264,7 @@ function playAudio() {
         source.start(nextPlayTime);
         
         // Update nextPlayTime for the next chunk
-        nextPlayTime += bufferDuration;
+        nextPlayTime += effectiveDuration;
     }
 
     isPlaying = false;
@@ -454,8 +457,10 @@ const handleConnect = async () => {
 
     if (language === 'ar') {
         sampleRate = 24000;
+        playbackRate = 1.05;
     } else {
         sampleRate = 16000;
+        playbackRate = 1;
     }
 
     websocket = new WebSocket(`/agent/${mode}/${language}`);
