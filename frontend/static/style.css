@@ -64,6 +64,15 @@ body {
     animation-delay: 0.45s;
 }
 
+.agent-container {
+    width: 100%;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
 .agent-card {
     align-self: start;
     width: min(100%, 520px);
@@ -138,7 +147,7 @@ select {
     color: #0f172a;
 }
 
-button {
+button#start-btn {
     background: linear-gradient(135deg, #3b82f6, #2563eb);
     color: #ffffff;
     font-weight: 700;
@@ -234,6 +243,48 @@ button:disabled {
     overflow: hidden;
     pointer-events: none;
 }
+
+#update-form,
+#payment-form {
+    width: max-content;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    display: none;
+}
+
+#update-form.active,
+#payment-form.active {
+    display: flex;
+}
+
+#update-form input {
+    width: 250px;
+    height: 35px;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #83ade6;
+    outline: none;
+    font-size: 1rem;
+    display: none;
+}
+#update-form input.active {
+    display: inline-block;
+}
+
+#update-form button,
+#payment-form button {
+    width: max-content;
+    height: max-content;
+    align-self: center;
+    padding: 7px 20px;
+    border-radius: 5px;
+    background-color: #2563eb;
+    color: whitesmoke;
+    font-weight: bold;
+    font-size: 1rem;
+}
+
 
 .customer-support {
     display: none;

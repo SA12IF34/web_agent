@@ -426,6 +426,73 @@ function handleExitCustomerSupportMode() {
     customerSupportMode?.classList.remove('show');
 }
 
+function handleUpdateAccount(field) {
+    const updateForm = document.getElementById('update-form');
+    const fieldEle = updateForm.querySelector(`input#${field}`);
+    updateForm.classList.add('active');
+    fieldEle.classList.add('active');
+
+    updateForm.querySelector('button').onclick = (e) => {
+        
+        
+        const response = fetch(`/account-update/${selectedAccountId}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                field: field,
+                value: fieldEle.value        
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                if (websocket instanceof WebSocket) {
+                    websocket.send(
+                        JSON.stringify({
+                            status: "UserAccountUpdated",
+                            account: selectedAccountId
+                        })
+                    )
+                }
+
+                updateForm.classList.remove('active');
+                fieldEle.classList.remove('active');
+            }
+        })
+            
+    }
+}
+
+function handlePayment(paymentId) {
+    const form = document.getElementById('payment-form');
+    form.classList.add('active');
+
+    form.querySelector('button').onclick = (e) => {
+        fetch(`/pay/${paymentId}/${selectedAccountId}`, {
+            method: 'POST',
+            body: JSON.stringify({
+                complete: true
+            }),
+            headers: {
+                'Content-type': 'application/json'
+            }
+        }).then(response => {
+            if (response.ok) {
+                if (websocket instanceof WebSocket) {
+                    websocket.send(
+                        JSON.stringify({
+                            status: 'PaymentCompleteDone',
+                            account: selectedAccountId,
+                            payment: paymentId
+                        })
+                    )
+                }
+                form.classList.remove('active')
+            }
+        })
+    }
+}
+
 const handleConnect = async () => {
     if (websocket) {
         websocket.close();
@@ -500,6 +567,12 @@ const handleConnect = async () => {
                     } 
                     if (data.status === 'UserStartedSpeaking') {
                         stopAudioOutput()
+                    }
+                    if (data.status === 'UpdateUserAccount') {
+                        handleUpdateAccount(data.field);
+                    }
+                    if (data.status === 'PaymentComplete') {
+                        handlePayment(data.payment)
                     }
                 }
             } catch (error) {

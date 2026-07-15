@@ -55,7 +55,7 @@ SETTINGS = {
         'speak': SpeakSettingsV1(
             provider=SpeakSettingsV1Provider_OpenAi(
                 model='gpt-4o-mini-tts',
-                voice='fable',
+                voice='cedar',
             ),
             endpoint=SpeakSettingsV1Endpoint(
                 url="https://api.openai.com/v1/audio/speech",
@@ -64,7 +64,7 @@ SETTINGS = {
                 }
             )
         ),
-        'greeting': 'مرحبًا، أنا خالد من فريق دعم Tech. كيف يمكنني مساعدتك اليوم؟'
+        'greeting': 'مرحبًا، أنا خالد من فريق دعم شركة Tech. كيف يمكنني مساعدتك اليوم؟'
     },
     'en': {
         'listen': AgentV1SettingsAgentListen(

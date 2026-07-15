@@ -260,10 +260,12 @@ async def create_payment(engine, order_id=None, status='pending'):
         return "Please provide an order id"
 
     async with AsyncSession(engine) as session:
-        payment = Payment(order=order_id, status=status)
-        session.add(payment)
-        await session.commit()
-        await session.refresh(payment)
+        payment = await session.exec(select(Payment).where(Payment.order == order_id))
+        if payment.first() is None:
+            payment = Payment(order=order_id, status=status)
+            session.add(payment)
+            await session.commit()
+            await session.refresh(payment)
 
     return json.loads(payment.json())
 

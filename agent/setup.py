@@ -1,5 +1,12 @@
 from deepgram import AsyncDeepgramClient
-from deepgram.agent.v1.types import AgentV1Settings, AgentV1SettingsAgent, AgentV1FunctionCallRequest, AgentV1SendFunctionCallResponse, AgentV1InjectAgentMessage
+from deepgram.agent.v1.types import (
+    AgentV1Settings, 
+    AgentV1SettingsAgent, 
+    AgentV1FunctionCallRequest,
+    AgentV1SendFunctionCallResponse, 
+    AgentV1InjectAgentMessage,
+    AgentV1InjectUserMessage
+)
 
 from agent.general.config import SETTINGS as GENERAL_SETTINGS
 from agent.general.functions import FUNCTIONS as GENERAL_FUNCTIONS, FUNCTIONS_MAP as GENERAL_FUNCTIONS_MAP
@@ -152,6 +159,23 @@ class Agent:
                 
                 if "bytes" in data:
                     await self.audio_queue.put(data['bytes'])
+                else:
+                    print(data)
+                    if 'text' in data:
+                        data = json.loads(data['text'])
+                        if 'status' in data:
+                            if data['status'] == 'UserAccountUpdated':
+                                await self.agent_conn.send_inject_user_message(
+                                    AgentV1InjectUserMessage(
+                                        content=f"Inject Message: User {data['account']} Updated their account"
+                                    )
+                                )
+                            if data['status'] == 'PaymentCompleteDone':
+                                await self.agent_conn.send_inject_user_message(
+                                    AgentV1InjectUserMessage(
+                                        content=f"Inject Message: User {data['account']} Completed Payment {data['payment']}"
+                                    )
+                                )
 
         except Exception as exc:
             pass
@@ -215,7 +239,7 @@ class Agent:
                 })
 
             elif message_type == 'ConversationText':
-                pass
+                print(message.content)
 
             elif message_type == 'FunctionCallRequest':
                 await self.handle_function_call(message)
@@ -229,10 +253,9 @@ class Agent:
                 await self.close()
 
         except WebSocketDisconnect:
-            pass
+            await self.close()
         except Exception as exc:
-            print('EXCEPTION')
-            traceback.print_exc()
+            pass            
 
     async def handle_function_call(self, ev: AgentV1FunctionCallRequest):
         
@@ -243,19 +266,59 @@ class Agent:
         function_name = functions[0].name
         function_call_id = functions[0].id
         parameters = json.loads(functions[0].arguments)
-
+        print(parameters)
         try:
             if function_name == 'end_call':
 
                 await self.end_conversation(parameters.get('farewell', 'Take care.'))
                 return
+
+            if function_name == 'update_account':
+                await self.ws.send_json({
+                    "status": "UpdateUserAccount",
+                    'field': parameters['field']
+                })
+                await self.agent_conn.send_function_call_response(AgentV1SendFunctionCallResponse(
+                    id=function_call_id,
+                    name=function_name,
+                    content="Email with account update link sent to the user"
+                ))
+                return
             
+            
+
             function = self.functions_map.get(function_name)
+        
             if not function:
                 raise ValueError(f'Function does not exist: {function_name}')
             
             result = await function(parameters)
 
+            if function_name == 'create_payment':
+                
+                if type(result) == dict:
+                    if result['status'] == 'paid':
+                        await self.agent_conn.send_function_call_response(AgentV1SendFunctionCallResponse(
+                            id=function_call_id,
+                            name=function_name,
+                            content='Payment is already paid'
+                        ))
+                        return
+                    
+                    await self.ws.send_json({
+                        "status": "PaymentComplete",
+                        "payment": result['id']
+                    })
+
+                    response = AgentV1SendFunctionCallResponse(
+                        id=function_call_id,
+                        name=function_name,
+                        content=f"Created Payment: \n{json.dumps(result)}"
+                    )
+                    await self.agent_conn.send_function_call_response(response)
+                    return
+            
+            
             response = AgentV1SendFunctionCallResponse(
                 id=function_call_id,
                 name=function_name,
@@ -309,3 +372,4 @@ class Agent:
         await self.cleanup()
 
         self.is_running = False
+        print('agent closed.')

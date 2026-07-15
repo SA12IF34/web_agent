@@ -18,6 +18,7 @@ from agent.support.logic import (
     search_order,
     get_account_payments as handle_get_account_payments,
     get_requests,
+    update_account,
     update_payment
 )
 import asyncio
@@ -114,6 +115,29 @@ async def get_account_complaints(account_id: str):
         return requests
     
     raise HTTPException(500)
+
+class UpdateRequest(TypedDict):
+    field: str
+    value: str
+
+@app.post('/account-update/{account_id}')
+async def account_update(request: UpdateRequest, account_id: str):
+    field = request['field']
+    value = request['value']
+
+    result = None
+
+    if field == 'email':
+        result = await update_account(engine, account_id, email=value)
+    elif field == 'phone':
+        result = await update_account(engine, account_id, phone=value)
+    elif field == 'password':
+        result = await update_account(engine, account_id, password=value)
+
+    if result is None:
+        raise HTTPException(400)
+    
+    return result
 
 @app.post('/reset-password/{account_id}')
 async def reset_account_password(request, account_id: str):

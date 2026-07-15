@@ -247,13 +247,13 @@ FUNCTIONS = [
         
         How to use this function:
         - you specify one term or more based on your need as a parameter and call it with those terms
-        - if you specify more than one term, separate the terms by commas (e.g. "term one,term two,term three)""",
+        - if you specify more than one term, separate the terms by commas (e.g. "headphones" -> "Headphones, head phone, headphone, headsets, headset, earbud")""",
         parameters={
             "type": "object",
             "properties": {
                 "terms": {
                     "type": "string",
-                    "description": "The terms which will be used to search products. Can be one term or comma separated terms."
+                    "description": """Comma separated terms (e.g. "headphones" -> "Headphones, head phone, headphone, headsets, headset, earbud", "any mouses" -> "mouse, mouses, gaming mouse, wireless mouse"), make sure to include different terms that correspond to the product that the user is looking for"""
                 }
             },
             "required": ["terms"]
@@ -326,7 +326,7 @@ FUNCTIONS = [
                 },
                 "email": {
                     "type": "string",
-                    "description": """User account email. Make sure it is a valid email."""
+                    "description": """User account email. Make sure to format the email correctly (e.g. "ava dot martin at example dot com" -> "ava.martin@example.com")"""
                 },
                 "phone": {
                     "type": "string",
@@ -355,32 +355,31 @@ FUNCTIONS = [
     ),
     ThinkSettingsV1FunctionsItem(
         name="update_account",
-        description="""Update account details like email or phone number.
+        description="""Sends the user a link for a form to update their account.
         When to call this function:
         - The user asks to update the email or phone number of their account
         
         How use this function:
         - The user asks you to update their account with the new data
-        - You ask them for their account id or current email of phone number
+        - You ask them for their account id or current email
         - You retreive their account details with search_account function
-        - You ask them for the new data like email or phone number and double check with the user
-        - You call update_account with the account ID and the new data""",
+        - You call update_account with the name of the field to be updated
+        - A link will be sent to user's email to update their account
+        
+        
+        When user updates their account:
+        - You will receive a user message starting with "Inject Message: " containing the result (e.g. "Inject Message: User ACC-123456 Updated their account successfully")
+        - You call search_account function to verify the update and inform the user""",
         parameters={
             "type": "object",
             "properties": {
-                "account_id": {
+                "field": {
                     "type": "string",
-                    "description": "Account ID to lookup the account to be updated. A six digit prefixed with ACC-"
-                },
-                "email": {
-                    "type": "string",
-                    "description": "User new email."
-                },
-                "phone": {
-                    "type": "string",
-                    "description": "User new phone number. Make sure the country code prefixed with '+' is included"
+                    "description": "Field to be updated, it can be either 'email', 'phone' or 'password'",
+                    "enum": ['email', 'phone', 'password']
                 }
-            }
+            },
+            "required": ['field']
         }
     ),
     ThinkSettingsV1FunctionsItem(
@@ -405,13 +404,15 @@ FUNCTIONS = [
     ),
     ThinkSettingsV1FunctionsItem(
         name="create_payment",
-        description="""Create a payment for an existing order.
+        description="""Creates a payment if does not exist and sends the user a link for payment complete form.
         When to call this function:
-        - There is an order the user could not checkout
+        - There is an order with no payment
+        - There is an unpaid payment
 
         How to use this function:
         - You provide the order ID (ORD-XXXXXX) so the payment is attached to the correct order
-        - Use this only after confirming the intended order""",
+        - Use this only after confirming the intended order
+        - When user completes payment you will receive a user message starting with (Inject Message..) that confirms that (e.g. "Inject Message: User ACC-XXXXXX Completed Payment P-XXXXXX")""",
         parameters={
             "type": "object",
             "properties": {
